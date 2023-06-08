@@ -1,7 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { InputLogin } from "./components/InputLogin";
+import { ButtonLogin } from "./components/ButtonLogin";
+import { useUsuarioLogado } from "../../shared/hooks";
 
 export const Login = () => {
 
+    const inputPasswordRef = useRef<HTMLInputElement>(null);
+    const {nomeDoUsuario} = useUsuarioLogado();
+    
     const [password,setPassword] = useState('');
     
     const [email,setEmail] = useState('');
@@ -10,51 +16,45 @@ export const Login = () => {
         return email.length*1000;
     },[email.length])
 
-
-
-    useEffect(()=>{
-
-    },[])
-
-    useEffect(()=>{
-
+    const handleEntrar = useCallback(() =>{
         console.log(email);
-   
-    },[email])
+        console.log(password);
+           if (inputPasswordRef != null){
+                inputPasswordRef.current?.focus()
+            }
+    },[email, password]);
+
  
-    useEffect(()=>{
-
-        console.log(password);
-   
-    },[password])
-
-    const handleEntrar =() =>{
-        console.log(email);
-        console.log(password);
-    }
     return(
 
         <div>
             <form>
                 <p>Quantidade de caracteres informado:{emaillength}</p>
-                <label>
-                    <span>E-mail</span>
-                    <input value={email} onChange={e => setEmail(e.target.value)} />
+                <InputLogin 
+                label="Email"
+                value={email}
+                onChange={newValor => setEmail(newValor)}
+                onPressEnter={()=>inputPasswordRef.current?.focus()}/>
+               
+                <InputLogin
+                label="Senha" 
+                type="password"
+                value={password}
+                ref={inputPasswordRef}
+                onChange={newValue => setPassword(newValue)}/>
 
-                </label>
-
-                <label>
-                    <span>Senha</span>
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value) } />
- 
-                </label>
-
-                <button type="button" onClick={handleEntrar}>
+                {/* <button type="button" onClick={handleEntrar}>
                     Entrar
-                </button>
-  
-            </form>
-            
+                </button> */}
+
+                <ButtonLogin type="button" onClick={handleEntrar}> 
+                    Entrar
+                </ButtonLogin>
+                <ButtonLogin type="button" onClick={handleEntrar}>
+                    Cadastrar
+                </ButtonLogin> 
+                
+         </form>
         </div>
     );
 }
